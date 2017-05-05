@@ -178,13 +178,14 @@ tidy4a <- table4a %>%
   gather(`1999`, `2000`, key = "year", value = "cases")
 #%>%take what comes out of doing what goes before and make it the first argument of the next function
 
-#same thing
-tidy4a <- gather(table4a, `1999`, `2000`, key = "year", value = "cases")
+#same thing; for the two column names its gathering (1999 and 2000) requires backtick quotes, because otherwise R will treat them as numbers
+tidy4a <- gather(table4a, `1999`, `2000`, key = "year", value = "cases") #key is new column that you will put the current column names in and cases are the values of the old columns they used to be in
 View(tidy4a)
 
 
 tidy4b <- table4b %>% 
-  gather(`1999`, `2000`, key = "year", value = "population")
+  gather(`1999`, `2000`, key = "year", value = "population") 
+
 
 
 #join tables together###########################
@@ -192,21 +193,95 @@ left_join(tidy4a, tidy4b)
 
 
 
-
 #spreading#######################################
-spread(table2, key = type, value = count)
+#split column apart; when a value in one column is dependent on the value in another column/can't reference values in one column without another column. ex. 745 makes no sense until look and see if it is cases; want a column for cases and one for population
+spread(table2, key = "type", value = "count")
 
 
 
 #separating####################################
+#when the data has the multiple types of data in one cell (ex. cases of disease/population; ex. name is Frew,James and want it to be first and last name)
+#R looks for a character that doesn't belong and recognizes it as the delimiter
+#note, the cases and population thinks they are characters (they are left justified)
 table3 %>% 
   separate(rate, into = c("cases", "population"))
 
+#add sep="/" to the end to make it realize a specific delimiter
+#add convert=TRUE at the end to make it recognize population and cases as numbers
+table3 %>% 
+  separate(rate, into = c("cases", "population"), sep="/", convert=TRUE)
+#can do sep=2 for it can start separating after the second column
+
+###foo%>% bar(buz,...) is same as bar(foo, buz,...)
 
 
 
+#unite############################################
+#taking values and slaming them into a sequence
+#specifiy column you want and then rename it to year
+table5 %>% 
+  unite(new, century, year)
+
+table3 %>%
+  separate(year, into=c("century","year"), sep=2) %>%
+  unite(year, century, year, sep="")
+#sep="" means no separator in year
+#unite does the direct opposite of separate
 
 
+
+################################################################################
+#missing values
+#NA (no data here/missing value)
+#explicitly say there is nothing here with a NA vs. it just being empty (implicit)
+#NA means that you say there is nothing there or leave it empty and it will assume that its missing data
+
+stocks <- tibble(
+  year   = c(2015, 2015, 2015, 2015, 2016, 2016, 2016),
+  qtr    = c(   1,    2,    3,    4,    2,    3,    4),
+  return = c(1.88, 0.59, 0.35,   NA, 0.92, 0.17, 2.66)
+)
+
+
+View(stocks)
+#put a NA means put a value in there that says its not there
+#vs. in 2016, we know there was a first quarter but there is just missing data (have data two quarters instead of 4 for the year)
+
+#forcing table to populate missing values with NA (explicit missing data table)
+stocks %>% 
+  spread(year, return) 
+
+
+#get rid of any spurious NA columns, get rid any obs that have a NA for that obs (is implicitly represented by its virtue of it not being there)
+stocks %>% 
+  spread(year, return) %>% 
+  gather(year, return, `2015`:`2016`, na.rm = TRUE) 
+
+
+#another way to make missing data explicit (NA)
+stocks %>% 
+  complete(year, qtr) 
+
+
+
+#fill###########################################################
+#prof           teaching
+#Frew,James     262
+#               296
+#               INT 33T
+# implicitly implies that Frew,James is what is in the next empty column_to_rownames, order matters
+
+
+treatment <- tribble(
+  ~ person,           ~ treatment, ~response,
+  "Derrick Whitmore", 1,           7,
+  NA,                 2,           10,
+  NA,                 3,           9,
+  "Katherine Burke",  1,           4
+)
+
+treatment %>% 
+  fill(person)
 
 
 
