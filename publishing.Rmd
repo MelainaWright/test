@@ -1,0 +1,27 @@
+---
+title: "publishing"
+author: "MelainaWright"
+date: "May 26, 2017"
+output: 
+  html_document: default
+  ioslides_presentation: default
+  slidy_presentation: default
+  
+  
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+#answer.nb.html (can see not just the top of the data output but see entire results)
+```
+
+##Map demo
+ 
+``` {r}
+library(leaflet)
+leaflet() %>%
+  setView(174.764, -36.877, zoom = 16) %>% 
+  addTiles() %>%
+  addMarkers(174.764, -36.877, popup = "Maungawhau")
+```

@@ -59,35 +59,39 @@ p
 
 pclr =ggplot(clim, aes(y=tmax, x=as.factor(month)))+geom_boxplot()
 pclr = pclr + labs(y="Maximum Temperature", x="Month")
-pclr = pclr+theme(axis.text= element_text(face="bold", colour="red", size=14))
-pclr = pclr +  geom_hline(yintercept=0, col="yellow", size=4)
+pclr = pclr+theme(axis.text= element_text(face="bold", colour="red", size=14)) #element_text changes theme of text
+pclr = pclr +  geom_hline(yintercept=0, col="yellow", size=4) #horizontal line; here, get a zero line
 pclr
 
-#lets say we want to color in the boxes - this is inside the boxplto so can't add
-p = ggplot(clim, aes(y=tmax, x=as.factor(month)))+geom_boxplot(col="rosybrown3", fill="red")
+
+#lets say we want to color in the boxes - this is inside the boxplot so can't add; easiest to change color of the boxes in the boxplot in the geom
+p = ggplot(clim, aes(y=tmax, x=as.factor(month)))+geom_boxplot(col="rosybrown3", fill="red")#col changes outer part, fill changes inner part
 p
 # useful to see color options
 colors()
 
-p = p + labs(y= expression(paste("Maximum Temperature ",C**degree)), x="Month") 
+
+p = p + labs(y= expression(paste("Maximum Temperature ",C**degree)), x="Month") #change format of axis title; expression allows you to paste text with special features aka ** for degree
 p= p+theme(axis.text= element_text(face="bold", colour="steelblue", size=14), 
            axis.title=element_text(face="italic", size=14))
 p 
 p = p+  ggtitle("Monthly Temperature in Sierras")
 p
 
+
 # notice how themes keep inheriting - so you can call theme multiple times
 p + coord_flip() 
-p=p + coord_flip() + theme(plot.margin=unit(c(1,3,1,3),"cm")) # top right bottom left
+p=p + coord_flip() + theme(plot.margin=unit(c(1,3,1,3),"cm")) # top right bottom left; flip/swap axes
 p
-p = p + theme(plot.title=element_text(size=16, hjust=0.5), plot.background=element_rect(fill="peachpuff1")) 
+p = p + theme(plot.title=element_text(size=16, hjust=0.5), plot.background=element_rect(fill="peachpuff1")) #hjust is horizontal justified; element_rect changes boxes around things aka change background color
 p
+
 
 # to display more than one plot (a "matrix" or grid of plots)
-
 grid.arrange(p,pclr)
 # or to control to make by col
-grid.arrange(p, pclr, ncol=2)
+grid.arrange(p, pclr, ncol=2) #grid.arrange can change number of columns and rows
+
 
 # there are also built in themes
 pclr = pclr+theme_bw()
@@ -100,15 +104,16 @@ pclr
 
 ############################different types of plots (geoms)############################################################
 # There are many different geoms (geometries) - lets try the standard ones
+
+
 # scatter plot
-
-
-p2=ggplot(clim, aes(x=tmax, y=tmin))+geom_point(col="blue", shape=9, size=rel(4))
+p2=ggplot(clim, aes(x=tmax, y=tmin))+geom_point(col="blue", shape=9, size=rel(4)) #shape for shape of points, look online for codes for each shape
 p2
 p2=p2+labs(x="Max Temp C", y="Min Temp C") 
 p2 = p2+ ggtitle("How does daily maximim and min temp compare")
 p2 = p2 + geom_abline(intercept=0,slope=1, colour="yellow", size=4)
 p2
+
 
 #density plot
 p3=ggplot(clim, aes(x=rain))+geom_density()
@@ -116,10 +121,15 @@ p3
 p3 = ggplot(subset(clim, clim$rain > 0), aes(x=rain))+geom_density(fill="blue")
 #p4=ggplot(clim, aes(x=date,y=rain))+geom_line()+ggtitle("Line Graph")
 p3
+
+
 #fix issue with date
 clim$date = mdy(paste(clim$month, clim$day, clim$year, sep="/"))
 p4=ggplot(clim, aes(x=date,y=rain))+geom_line()+ggtitle("Line Graph")
 p4
+
+#all four graphs on one plot
+windows()
 grid.arrange(p,p2,p3,p4)
 
 
@@ -139,24 +149,26 @@ grid.arrange(p,p2,p3,p4)
 # The thinning experiment is repeated for different start dates within a 50 year historic climate record,
 # And for different thinning intensities
 # And for different types of thinning that try to maximize or minimize sharing of water between trees
-
+#can group by color or size of points or shapes of points
 
 
 # ok lets look at how biomass recovers
-p1=ggplot(thindeep, aes(x=as.factor(wy), y=plantc))+geom_boxplot()
+p1=ggplot(thindeep, aes(x=as.factor(wy), y=plantc))+geom_boxplot() #boxplot of carbon vs water year
 p1 = p1+labs(x="Years since thinning", y="Biomass")
 p1 = p1 +theme(axis.text= element_text(face="bold", size=14), 
                plot.margin = unit(c(15,15,15,5),"pt"), axis.title = element_text(size=14))
 p1
-# but boxplots include all thinning intensities - maybe we want to separate those out
 
-p1=ggplot(thindeep, aes(x=as.factor(wy), y=plantc, col=as.factor(thin)))+geom_boxplot()
+
+# but boxplots include all thinning intensities - maybe we want to separate those out
+p1=ggplot(thindeep, aes(x=as.factor(wy), y=plantc, col=as.factor(thin)))+geom_boxplot() #col want to be a category (differentiate variables aka amount that thinned)
 p1 = p1+labs(x="Years since thinning", y="Biomass")
 p1 = p1 +theme(axis.text= element_text(face="bold", size=14), 
                plot.margin = unit(c(15,15,15,5),"pt"), axis.title = element_text(size=14))
+p1
+
 
 # or we could base the filling of the boxplots on thinning intensity
-
 p1=ggplot(thindeep, aes(x=as.factor(wy), y=plantc, fill=as.factor(thin)))+geom_boxplot()
 p1 = p1+labs(x="Years since thinning", y="Biomass")
 p1 = p1 +theme(axis.text= element_text(face="bold", size=14), 
@@ -181,8 +193,8 @@ p1 = p1 +theme(axis.text= element_text(face="bold", size=14),
 # scale_color_continuous
 
 
-# assuming qualitative
-p1 + scale_fill_brewer(type="qual", palette="Dark2")
+# assuming qualitative; scale discrete things, have 4 diff categories of thinning
+p1 + scale_fill_brewer(type="qual", palette="Dark2") #tell it type of data we are using (ex. qualitative)
 p1 + scale_fill_brewer(type="qual", palette="Set3")
 
 # but actually sequential so can using diverging palettes - diverse from center
@@ -191,11 +203,11 @@ p1 + scale_fill_brewer(type="div", palette="PiYG")
 # but actually sequential so can using diverging palettes - diverse from center
 p1 + scale_fill_brewer(type="seq", palette="BuGn")
 
-# and can add names
+# and can add names in legend
 lnms = c("None","Low","Med","High")
 p1 + scale_fill_brewer(type="seq", palette="BuGn", name="Thin Intensity", labels=lnms)
 
-# using themes to change legend format - position
+# using themes to change legend format - position of where legend should go
 p1 + scale_fill_brewer(type="seq", palette="BuGn", name="Thin Intensity", labels=lnms) +
   theme(legend.position="bottom")
 
@@ -209,33 +221,60 @@ p1 + scale_fill_brewer(type="seq", palette="BuGn", name="Thin Intensity", labels
 
 
 
-#################################summarize graphs (take mean)######################################################3
+#################################summarize graphs (take mean)######################################################
 #automatically summarize graph and added to our plot Lets say we also want to show the means as lines
 
+#2types of thinning: distributed thinning (true or false) and thin
 
-# assuming qualitative
-p1 + scale_fill_brewer(type="qual", palette="Dark2")
-p1 + scale_fill_brewer(type="qual", palette="Set3")
+# what if we just want means
+# there are multiple ways to do this but 
 
-# but actually sequential so can using diverging palettes - diverse from center
-p1 + scale_fill_brewer(type="div", palette="PiYG")
+p1=ggplot(thindeep, aes(x=wy, y=plantc, col=as.factor(thin)))+stat_summary(fun.y="mean", geom="line")
+p1 = p1 +theme(axis.text= element_text(face="bold", size=14))
+p1 + scale_color_brewer(type="div", palette="Spectral", name="Thin Intensity", labels=lnms) +
+  theme(legend.position=c(0.1,0.9), legend.background=element_rect(fill="seashell2"))    
 
-# but actually sequential so can using diverging palettes - diverse from center
-p1 + scale_fill_brewer(type="seq", palette="BuGn")
 
-# and can add names
-lnms = c("None","Low","Med","High")
-p1 + scale_fill_brewer(type="seq", palette="BuGn", name="Thin Intensity", labels=lnms)
+# we also might want to separate out our two different types of thinning - indicated by type=shared
+#use color and type of line to separate the different types of thinning and then plot mean values (with stat_summary)
+p1=ggplot(thindeep, aes(x=wy, y=plantc, col=as.factor(thin), type=shared))+stat_summary(fun.y="mean", geom="line", aes(linetype=shared))
+p1 = p1 +theme(axis.text= element_text(face="bold", size=14))
+p1 + scale_color_brewer(type="div", palette="Spectral", name="Thin Intensity", labels=lnms) + 
+  scale_linetype(name="Thin Type", labels=c("Spaced","Clustered"))
 
-# using themes to change legend format - position
-p1 + scale_fill_brewer(type="seq", palette="BuGn", name="Thin Intensity", labels=lnms) +
-  theme(legend.position="bottom")
 
-p1 + scale_fill_brewer(type="seq", palette="BuGn", name="Thin Intensity", labels=lnms) +
-  theme(legend.position=c(0.1,0.9))
+#averaging by year and then fitting a curve 
+#stat smooth fits a curve
+p1 = ggplot(clim, aes(y=tmax,x=year))+stat_summary(fun.y="mean", geom="point")+stat_smooth()
 
-p1 + scale_fill_brewer(type="seq", palette="BuGn", name="Thin Intensity", labels=lnms) +
-  theme(legend.position=c(0.1,0.9), legend.background=element_rect(fill="seashell2")) 
+
+# we can also combined bar plots and line summaries (and deal with different axis)
+# we need to transform to get similar scales
+p1 = ggplot(clim) + geom_bar(aes(x=year,y=rain), stat="summary", fun.y="sum") + ggtitle("Rain")
+p2 = ggplot(clim) + geom_line(aes(x=year, y=tmax), stat="summary", fun.y="mean") + ggtitle("Temp")
+grid.arrange(p1,p2)
+
+
+# estimate scaling
+scl = 3000/15
+# add some labels
+
+p = ggplot(clim) + geom_bar(aes(x=year,y=rain), stat="summary", fun.y="sum",  fill="cyan") + 
+  geom_line(aes(x=year, y=tmax*scl), stat="summary", fun.y="mean", col="red") 
+p 
+p=p+ scale_y_continuous(sec.axis = sec_axis(~./scl, name=expression(paste("Maximum Temperature ",C**degree)))) + 
+  labs(x="Year", y="Rainfall (mm/yr)")
+p
+
+
+# annotation
+p = ggplot(clim) + geom_bar(aes(x=year,y=rain), stat="summary", fun.y="sum",  fill="cyan") + 
+  geom_line(aes(x=year, y=tmax*scl), stat="summary", fun.y="mean", col="red") 
+p=p+ scale_y_continuous(sec.axis = sec_axis(~./scl, name=expression(paste("Maximum Temperature ",C**degree)))) + 
+  labs(x="Year", y="Rainfall (mm/yr)")
+p = p+ annotate("text", x=1990, y=500, label="Precip", colour="blue", size=6, hjust=0.5)
+p = p+ annotate("text", x=1940, y=2700, label="Temperature", colour="red", size=6, hjust=0)
+p
 
 
 
