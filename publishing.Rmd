@@ -25,3 +25,13 @@ leaflet() %>%
   addTiles() %>%
   addMarkers(174.764, -36.877, popup = "Maungawhau")
 ```
+
+
+
+---
+title: "My Notebook"
+output: html_notebook
+---
+
+
+#see app3 for notes

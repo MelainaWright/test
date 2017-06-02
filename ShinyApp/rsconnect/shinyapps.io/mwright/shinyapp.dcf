@@ -1,0 +1,10 @@
+name: shinyapp
+title:
+account: mwright
+server: shinyapps.io
+appId: 184031
+bundleId: 842177
+url: https://mwright.shinyapps.io/shinyapp/
+when: 1495821718.11935
+asMultiple: FALSE
+asStatic: FALSE

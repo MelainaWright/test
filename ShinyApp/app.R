@@ -40,3 +40,15 @@ server <- function(input, output) {
 }
 
 shinyApp(ui = ui, server = server)
+
+
+#create folder that just has app in it, folder name has to have 4+ letters in it
+#into console type rsconnect::deployApp("C:/Users/melai/Documents/BrenSpring2017/ESM262/test2/ShinyApp")
+#this pushes your website and makes it live online once you are done working on it in R; can manage it via your shinyapps.io account
+
+
+
+
+
+
+
